@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each family list lives under a long random code that is only in the share link.
+    // Lists cannot be browsed; you must know the code.
+    match /lists/{code}/items/{item} {
+      allow read, write: if code.size() >= 16
+        && (request.resource == null || request.resource.data.name is string && request.resource.data.name.size() < 200);
+    }
+  }
+}

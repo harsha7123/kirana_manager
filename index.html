@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="te">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kirana · కిరాణా</title>
+  <meta name="description" content="Shared kirana list for the family. Add by voice or tap, tick at the shop.">
+  <meta name="theme-color" content="#C8A27A">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5.5 12.5l4 4 9-9.5"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><circle cx="17.5" cy="5.5" r="2.5"/><circle cx="6.5" cy="12" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/><path d="M8.7 10.8l6.6-4M8.7 13.2l6.6 4"/></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H12"/></symbol>
+      <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="top">
+    <div class="top-row">
+      <h1><span data-t="title"></span></h1>
+      <button class="icon-btn" id="settingsBtn" type="button"><svg class="ic"><use href="#i-settings"/></svg><span class="sr-only" data-t="settings"></span></button>
+    </div>
+    <p class="sync" id="sync"><span class="dot"></span><span id="syncText"></span></p>
+    <form class="add" id="addForm" autocomplete="off">
+      <label class="sr-only" for="addInput" data-t="addPlaceholder"></label>
+      <input id="addInput" enterkeyhint="done">
+      <button type="button" class="add-mic" id="micBtn"><svg class="ic"><use href="#i-mic"/></svg><span class="sr-only" data-t="speak"></span></button>
+      <button type="submit" class="add-go"><svg class="ic"><use href="#i-plus"/></svg><span data-t="add"></span></button>
+    </form>
+    <p class="heard" id="heard" aria-live="polite"></p>
+    <svg class="twine" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 C 60 2, 120 13, 200 7 S 340 2, 400 8"/></svg>
+  </header>
+
+  <main class="paper">
+    <section class="usual" aria-labelledby="usualH">
+      <h2 id="usualH" data-t="usual"></h2>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section aria-labelledby="todoH">
+      <h2 id="todoH" class="list-h"><span data-t="toBuy"></span> <span class="count" id="todoCount"></span></h2>
+      <ul class="items" id="todo"></ul>
+      <div class="empty" id="todoEmpty" hidden><p data-t="emptyTodo"></p></div>
+    </section>
+
+    <section class="bought-sec" id="boughtSec" hidden>
+      <div class="list-h list-h--row">
+        <button class="fold" id="foldBtn" type="button" aria-expanded="false"><svg class="ic"><use href="#i-chev"/></svg><span data-t="bought"></span> <span class="count" id="doneCount"></span></button>
+        <button class="text-btn" id="clearBtn" type="button" data-t="clearBought"></button>
+      </div>
+      <ul class="items items--done" id="done" hidden></ul>
+    </section>
+  </main>
+
+  <!-- Edit item -->
+  <dialog id="editSheet" class="sheet">
+    <form method="dialog" class="sheet-body" id="editForm">
+      <div class="sheet-head"><h2 data-t="editItem"></h2><button type="button" class="icon-btn" data-close><svg class="ic"><use href="#i-close"/></svg><span class="sr-only" data-t="close"></span></button></div>
+      <label class="field"><span data-t="item"></span><input name="name" required autocomplete="off"></label>
+      <label class="field"><span data-t="qty"></span><input name="qty" autocomplete="off"></label>
+      <div class="qty-chips" id="qtyChips"></div>
+      <label class="field"><span data-t="note"></span><input name="note" autocomplete="off"></label>
+      <p class="meta" id="editMeta"></p>
+      <div class="sheet-foot">
+        <button type="button" class="btn btn--danger-text" id="delBtn"><svg class="ic"><use href="#i-trash"/></svg><span data-t="delete"></span></button>
+        <button type="submit" class="btn btn--primary" data-t="save"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="setSheet" class="sheet">
+    <div class="sheet-body">
+      <div class="sheet-head"><h2 data-t="settings"></h2><button type="button" class="icon-btn" data-close><svg class="ic"><use href="#i-close"/></svg><span class="sr-only" data-t="close"></span></button></div>
+      <label class="field"><span data-t="yourName"></span><input id="nameInput" autocomplete="off"></label>
+      <div class="field"><span data-t="language"></span>
+        <div class="seg" role="group"><button type="button" data-lang="te">తెలుగు</button><button type="button" data-lang="en">English</button></div>
+      </div>
+      <div class="share-box" id="shareBox"></div>
+    </div>
+  </dialog>
+
+  <!-- First run: name -->
+  <dialog id="nameSheet" class="sheet sheet--center">
+    <form method="dialog" class="sheet-body" id="nameForm">
+      <h2 data-t="whoAreYou"></h2>
+      <p class="muted" data-t="whoHint"></p>
+      <div class="name-picks" id="namePicks"></div>
+      <label class="field"><span data-t="yourName"></span><input id="firstName" required autocomplete="off"></label>
+      <div class="sheet-foot"><button type="submit" class="btn btn--primary" data-t="start"></button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" class="toast-btn" id="toastBtn" hidden></button></div>
+
+  <script src="config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
